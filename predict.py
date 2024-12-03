@@ -37,7 +37,7 @@ def read_old_and_new_data(new_dir):
     new_dir = new_dir[:-1] if new_dir[-1] == '/' else new_dir
     new_ev_dir = get_ev_dir(new_dir)
     seq_name = os.path.basename(new_dir)  # 17-03-30_12-53-58_1037500000_10975
-    dst_name = 'gen1' if 'gen1' in new_dir else 'gen4'
+    dst_name = 'flw_dataset' if 'flw_dataset' in new_dir else ('gen1' if 'gen1' in new_dir else 'gen4')
     old_dir = os.path.join('datasets', dst_name, 'train', seq_name)
     old_ev_dir = get_ev_dir(old_dir)
     old_ev_fn = get_ev_h5_fn(old_ev_dir)
@@ -74,7 +74,7 @@ def verify_data(new_dir, ratio=-1, ds_by2=False):
     if ds_by2:
         hw = tuple(s * 2 for s in hw)
     # skip labels
-    dst_name = 'gen1' if 'gen1' in new_dir else 'gen4'
+    dst_name = 'flw_dataset' if 'flw_dataset' in new_dir else ('gen1' if 'gen1' in new_dir else 'gen4')
     if (0. < ratio < 1.):
         label_list_fn = os.path.join('data/genx_utils/splits', dst_name,
                                      f'ssod_{ratio:.3f}-off0.pkl')

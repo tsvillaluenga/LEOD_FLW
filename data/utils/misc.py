@@ -73,8 +73,8 @@ def get_ev_h5_fn(ev_dir: str, dst_name: str = None) -> str:
     # ev_dir: .../18-03-29_13-15-02_5_605/event_representations_v2/stacked_histogram_dt=50_nbins=10/
     # ev_h5_fn: .../18-03-29_13-15-02_5_605/event_representations_v2/stacked_histogram_dt=50_nbins=10/event_representations.h5
     if dst_name is None:
-        dst_name = 'gen1' if 'gen1' in ev_dir else 'gen4'
-    ev_name = 'event_representations.h5' if dst_name == 'gen1' else \
+        dst_name = 'flw_dataset' if 'flw_dataset' in ev_dir else ('gen1' if 'gen1' in ev_dir else 'gen4')
+    ev_name = 'event_representations.h5' if (dst_name == 'gen1' or dst_name == 'flw_dataset') else \
         'event_representations_ds2_nearest.h5'
     ev_h5_fn = os.path.join(ev_dir, ev_name)
     return ev_h5_fn
