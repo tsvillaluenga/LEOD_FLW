@@ -60,7 +60,7 @@ class SequenceBase(MapDataPipe):
                  tflip_offset: int = -1):
         assert sequence_length >= 1
         assert path.is_dir()
-        assert dataset_type in {DatasetType.GEN1, DatasetType.GEN4}, \
+        assert dataset_type in {DatasetType.GEN1, DatasetType.GEN4, DatasetType.FLW}, \
             f'{dataset_type} not implemented'
 
         self.path = str(path)

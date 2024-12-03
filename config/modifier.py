@@ -15,7 +15,7 @@ def dynamically_modify_train_config(config: DictConfig):
 
         dst_cfg = config.dataset
         dst_name = dst_cfg.name
-        assert dst_name in {'gen1', 'gen4'}, f'{dst_name=} not supported'
+        assert dst_name in {'gen1', 'gen4', 'flw_dataset'}, f'{dst_name=} not supported'
         num_classes = 2 if dst_name == 'gen1' else 3
         dst_cfg.num_classes = num_classes
         dataset_hw = get_dataloading_hw(dataset_config=dst_cfg)
@@ -47,7 +47,7 @@ def dynamically_modify_train_config(config: DictConfig):
             backbone_name = backbone_cfg.name
             if backbone_name == 'MaxViTRNN':
                 partition_split_32 = backbone_cfg.partition_split_32
-                assert partition_split_32 in (1, 2, 4)  # gen1: 1, gen4: 2
+                assert partition_split_32 in (1, 2, 3, 4)  # gen1: 1, gen4: 2, flw: 3
 
                 multiple_of = 32 * partition_split_32
                 mdl_hw = _get_modified_hw_multiple_of(hw=dataset_hw, multiple_of=multiple_of)
@@ -94,6 +94,11 @@ def dynamically_modify_train_config(config: DictConfig):
                 if not isinstance(cls_thresh, float) and len(cls_thresh) == 2:
                     cls_thresh = type(cls_thresh)([cls_thresh[1], cls_thresh[1], cls_thresh[0]])
                     mdl_cfg.pseudo_label.cls_thresh = cls_thresh
+            elif dst_name == 'flw_dataset':
+                if isinstance(obj_thresh, (list, tuple)):
+                    assert len(obj_thresh) == 2
+                if isinstance(cls_thresh, (list, tuple)):
+                    assert len(cls_thresh) == 2
             else:
                 raise NotImplementedError(f'{dst_name=} not supported')
         # also do this to the detection head
@@ -104,6 +109,9 @@ def dynamically_modify_train_config(config: DictConfig):
             elif dst_name == 'gen4':
                 if len(thresh) == 2:
                     mdl_cfg.head.ignore_bbox_thresh = type(thresh)([thresh[1], thresh[1], thresh[0]])
+            elif dst_name == 'flw_dataset':
+                if len(thresh) == 2:
+                    assert len(thresh) == 2
             else:
                 raise NotImplementedError(f'{dst_name=} not supported')
 

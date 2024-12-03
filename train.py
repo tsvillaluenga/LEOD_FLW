@@ -61,6 +61,8 @@ def get_exp_name(config: DictConfig):
         train_name = f'{train_name}_lr{lr:.0e}'.replace('e-0', 'e-')
     elif 'gen4' in dst_name and lr != 0.000346:
         train_name = f'{train_name}_lr{lr:.0e}'.replace('e-0', 'e-')
+    elif 'flw_dataset' in dst_name and lr != 0.000346:
+        train_name = f'{train_name}_lr{lr:.0e}'.replace('e-0', 'e-')
     # misc
     suffix = config.suffix if hasattr(config, 'suffix') else ''
     # name

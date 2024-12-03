@@ -1,0 +1,14 @@
+# @package _global_
+defaults:
+  - default
+
+model:
+  backbone:
+    name: MaxViTRNN
+    partition_split_32: 3  # Usa un valor permitido (1, 2, o 4)
+    embed_dim: 48
+    stage:
+      attention:
+        dim_head: 24
+  fpn:
+    depth: 0.33

@@ -8,6 +8,7 @@ old_vis/
 outputs/
 validation_logs/
 sbatch/
+nerv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
