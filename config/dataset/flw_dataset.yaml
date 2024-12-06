@@ -5,7 +5,8 @@ name: flw_dataset
 path: /media/admin_flw/Volume/LEOD_FLW/datasets/FLW_Dataset_19-11-24
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
 sequence_length: 1
-resolution_hw: [480, 640]
+resolution_hw: [240, 304] #[480, 640]
+ev_repr_hw: [240, 304]
 downsample_by_factor_2: False
 only_load_end_labels: False
 
@@ -21,3 +22,4 @@ data_augmentation:
   stream:
     prob_hflip: 0.4
     prob_tflip: 0.5
+

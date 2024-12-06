@@ -8,7 +8,7 @@ from utils.evaluation.prophesee.evaluation import evaluate_list
 LABELMAP = {
     'gen1': ('car', 'ped'),
     'gen4': ('ped', 'cyc', 'car'),
-    'flw_dataset': ('ped', 'cyc', 'car'),
+    'flw_dataset': ('ped', 'cyc'),
 }
 
 
@@ -21,7 +21,7 @@ def get_labelmap(dst_name: str = None, num_cls: int = None) -> Tuple[str]:
             return LABELMAP['gen1']
         elif num_cls == 3:
             return LABELMAP['gen4']
-        elif num_cls == len(LABELMAP['flw_dataset']):
+        elif num_cls == 4:
             return LABELMAP['flw_dataset']
         else:
             raise ValueError(f"Invalid number of classes: {num_cls}")

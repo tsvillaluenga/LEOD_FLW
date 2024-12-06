@@ -5,7 +5,7 @@ from data.utils.types import DatasetType
 _type_2_hw = {
     DatasetType.GEN1: (240, 304),
     DatasetType.GEN4: (720, 1280),
-    DatasetType.FLW: (480, 640),
+    DatasetType.FLW: (240, 304),
 }
 
 _str_2_type = {
