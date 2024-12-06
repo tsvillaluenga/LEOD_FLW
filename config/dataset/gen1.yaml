@@ -2,7 +2,7 @@ defaults:
   - base
 
 name: gen1
-path: ./datasets/gen1/
+path: /media/admin_flw/Volume/TUD_Thesis/Gen1Mpx_datasets/Gen1
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
 sequence_length: 21
 resolution_hw: [240, 304]

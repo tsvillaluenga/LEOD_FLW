@@ -65,6 +65,7 @@ def build_streaming_dataset(
             print(f'Loaded label list from: {label_list_fn}')
         # sub-sample event sequences, but keep the labeling frequency (SSOD)
         seq_dirs = subsample_sequence(split_path, dataset_config.train_ratio)
+        print(f'# ---- [DEBUG] Sequences found for training: {seq_dirs}')  # Debugging print
         # when generating pseudo labels in the SSOD setting
         # we also need to load those skipped event sequences
         # we will make them skip all labels, as if the whole seq is skipped
@@ -79,8 +80,10 @@ def build_streaming_dataset(
             seq_dirs = all_dirs
     elif dataset_mode == DatasetMode.VALIDATION:
         seq_dirs = subsample_sequence(split_path, dataset_config.val_ratio)
+        print(f'# ---- [DEBUG] Sequences found for validation: {seq_dirs}')  # Debugging print
     elif dataset_mode == DatasetMode.TESTING:
         seq_dirs = subsample_sequence(split_path, dataset_config.test_ratio)
+        print(f'# ---- [DEBUG] Sequences found for testing: {seq_dirs}')  # Debugging print
     else:
         raise NotImplementedError(f'Unknown dataset mode: {dataset_mode}')
 

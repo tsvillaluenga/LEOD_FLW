@@ -8,6 +8,7 @@ from utils.evaluation.prophesee.evaluation import evaluate_list
 LABELMAP = {
     'gen1': ('car', 'ped'),
     'gen4': ('ped', 'cyc', 'car'),
+    'flw_dataset': ('ped', 'cyc', 'car'),
 }
 
 
@@ -16,8 +17,14 @@ def get_labelmap(dst_name: str = None, num_cls: int = None) -> Tuple[str]:
     if dst_name is not None:
         return LABELMAP[dst_name.lower()]
     elif num_cls is not None:
-        assert num_cls in (2, 3), f'Invalid number of classes: {num_cls}'
-        return LABELMAP['gen1'] if num_cls == 2 else LABELMAP['gen4']
+        if num_cls == 2:
+            return LABELMAP['gen1']
+        elif num_cls == 3:
+            return LABELMAP['gen4']
+        elif num_cls == len(LABELMAP['flw_dataset']):
+            return LABELMAP['flw_dataset']
+        else:
+            raise ValueError(f"Invalid number of classes: {num_cls}")
     else:
         raise NotImplementedError('Either dst_name or num_cls must be input')
 
@@ -28,7 +35,7 @@ class PropheseeEvaluator:
 
     def __init__(self, dataset: str, downsample_by_2: bool):
         super().__init__()
-        assert dataset in {'gen1', 'gen4'}
+        assert dataset in {'gen1', 'gen4', 'flw_dataset'}
         self.dataset = dataset
         self.label_map = get_labelmap(dataset)
         self.downsample_by_2 = downsample_by_2

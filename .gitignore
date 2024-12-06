@@ -2,7 +2,7 @@ pretrained
 pretrained/
 checkpoint/
 checkpoints/
-# datasets/
+datasets/
 vis/
 old_vis/
 outputs/

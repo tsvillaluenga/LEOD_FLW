@@ -14,12 +14,12 @@ training:
     div_factor: 20
     final_div_factor: 10000
 batch_size:
-  train: 8
-  eval: 8
+  train: 2
+  eval: 2
 hardware:
   num_workers:
-    train: 8
-    eval: 8
+    train: 2
+    eval: 2
 dataset:
   train:
     sampling: 'mixed'

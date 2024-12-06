@@ -2,16 +2,16 @@ defaults:
   - base
 
 name: flw_dataset
-path: /media/admin_flw/Volume/TUD_Thesis/LEOD/datasets/FLW_Dataset_19-11-24
+path: /media/admin_flw/Volume/LEOD_FLW/datasets/FLW_Dataset_19-11-24
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
-sequence_length: 21
+sequence_length: 1
 resolution_hw: [480, 640]
 downsample_by_factor_2: False
 only_load_end_labels: False
 
-train_ratio: 0.64
-test_ratio: 0.22
-val_ratio: 0.14
+train_ratio: 1.0
+test_ratio: 0.8
+val_ratio: 0.8
 
 # time-flip data augmentation
 data_augmentation:
