@@ -17,10 +17,18 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 LABELMAP_GEN1 = ("car", "pedestrian")
 LABELMAP_GEN4 = ('pedestrian', 'two wheeler', 'car', 'truck', 'bus', 'traffic sign', 'traffic light')
 LABELMAP_GEN4_SHORT = ('pedestrian', 'two wheeler', 'car')
+LABELMAP_FLW = ("crate", "human")
 
 
 def get_labelmap(dst_name):
-    return LABELMAP_GEN1 if dst_name.lower() == 'gen1' else LABELMAP_GEN4_SHORT
+    # return LABELMAP_GEN1 if dst_name.lower() == 'gen1' else LABELMAP_GEN4_SHORT
+    if dst_name.lower() == 'gen1':
+        return LABELMAP_GEN1
+    elif dst_name.lower() == 'flw_dataset':
+        return LABELMAP_FLW
+    else:
+        return LABELMAP_GEN4_SHORT
+
 
 
 def make_binary_histo(events, img=None, width=304, height=240):
@@ -59,6 +67,12 @@ def draw_bboxes_bbv(img, boxes, labelmap=LABELMAP_GEN1) -> np.ndarray:
         classid2colors = {
             0: (255, 255, 0),  # car -> yellow (rgb)
             1: (0, 0, 255),  # ped -> blue (rgb)
+        }
+        scale_multiplier = 4
+    elif labelmap == LABELMAP_FLW:
+        classid2colors = {
+            0: (0, 0, 255),  # cra -> blue (rgb)
+            1: (255, 255, 0),  # hum -> yellow (rgb)
         }
         scale_multiplier = 4
     else:

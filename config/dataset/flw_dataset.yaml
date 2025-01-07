@@ -2,7 +2,7 @@ defaults:
   - base
 
 name: flw_dataset
-path: /media/admin_flw/Volume/LEOD_FLW/datasets/FLW_Dataset_19-11-24
+path: /media/admin_flw/Volume/LEOD_FLW/datasets/flw_dataset
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
 sequence_length: 1
 resolution_hw: [240, 304] #[480, 640]

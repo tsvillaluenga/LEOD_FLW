@@ -77,7 +77,7 @@ def dynamically_modify_train_config(config: DictConfig):
             raise NotImplementedError
 
         # conversion between Gen1 and Gen4
-        # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car')
+        # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car'); flw: ('cra', 'hum')
         # we make gen4's cyc setting the same as ped if missed
         if hasattr(mdl_cfg, 'pseudo_label'):
             obj_thresh = mdl_cfg.pseudo_label.obj_thresh

@@ -18,7 +18,7 @@ pseudo_label:
   skip_first_t: 0
   # thresholds for filtering pseudo labels
   obj_thresh: [0.6, 0.3]  # thresholds for each category
-  cls_thresh: [0.6, 0.3]  # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car')
+  cls_thresh: [0.6, 0.3]  # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car'); flw: ('cra', 'hum')
   # by default we will use the same thresholds for ped and cyc
   # post-process using offline tracker, ignore bbox with short track length
   min_track_len: 6

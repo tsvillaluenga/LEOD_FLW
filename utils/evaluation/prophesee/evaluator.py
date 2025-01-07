@@ -8,7 +8,7 @@ from utils.evaluation.prophesee.evaluation import evaluate_list
 LABELMAP = {
     'gen1': ('car', 'ped'),
     'gen4': ('ped', 'cyc', 'car'),
-    'flw_dataset': ('ped', 'cyc'),
+    'flw_dataset': ('cra', 'hum'),
 }
 
 
