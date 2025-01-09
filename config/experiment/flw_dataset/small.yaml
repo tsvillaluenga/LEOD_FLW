@@ -7,6 +7,7 @@ model:
     name: MaxViTRNN
     partition_split_32: 3  # Usa un valor permitido (1, 2, o 4)
     embed_dim: 48
+    in_res_hw: [240, 304] ################################
     stage:
       attention:
         dim_head: 24

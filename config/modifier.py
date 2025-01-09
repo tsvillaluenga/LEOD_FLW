@@ -16,7 +16,8 @@ def dynamically_modify_train_config(config: DictConfig):
         dst_cfg = config.dataset
         dst_name = dst_cfg.name
         assert dst_name in {'gen1', 'gen4', 'flw_dataset'}, f'{dst_name=} not supported'
-        num_classes = 2 if dst_name == 'gen1' else 3
+        num_classes = 3 if dst_name == 'gen4' else 2
+        print(f"Dataset Name: {dst_name}, Number of Classes: {num_classes}") ####DEBUGGG
         dst_cfg.num_classes = num_classes
         dataset_hw = get_dataloading_hw(dataset_config=dst_cfg)
         dst_cfg.ev_repr_hw = dataset_hw

@@ -74,7 +74,7 @@ def draw_bboxes_bbv(img, boxes, labelmap=LABELMAP_GEN1) -> np.ndarray:
             0: (0, 0, 255),  # cra -> blue (rgb)
             1: (255, 255, 0),  # hum -> yellow (rgb)
         }
-        scale_multiplier = 4
+        scale_multiplier = 1
     else:
         assert labelmap == LABELMAP_GEN4_SHORT
         classid2colors = {
