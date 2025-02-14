@@ -18,7 +18,7 @@ def get_labelmap(dst_name: str = None, num_cls: int = None) -> Tuple[str]:
         return LABELMAP[dst_name.lower()]
     elif num_cls is not None:
         if num_cls == 2:
-            return LABELMAP['gen1']
+            return LABELMAP['flw_dataset']	###'gen1'
         elif num_cls == 3:
             return LABELMAP['gen4']
         elif num_cls == 4:

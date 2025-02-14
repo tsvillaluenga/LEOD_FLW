@@ -32,4 +32,4 @@ dataset:
     sampling: 'stream'
 model:
   backbone:
-    partition_split_32: 3
+    partition_split_32: 1

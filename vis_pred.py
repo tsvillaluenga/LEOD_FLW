@@ -236,7 +236,7 @@ def main(config: DictConfig):
     config.batch_size.eval = 1
     config.hardware.num_workers.eval = 1
     config.dataset.test_ratio = num_video / 400 if is_gen1 else num_video / 100
-    config.dataset.sequence_length = 640 if is_gen1 else 256
+    config.dataset.sequence_length = 304 if is_gen1 else 256                              ###config.dataset.sequence_length = 640 if is_gen1 else 256
 
     # ---------------------
     # Data

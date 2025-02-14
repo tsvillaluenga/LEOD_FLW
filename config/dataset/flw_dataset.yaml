@@ -4,11 +4,12 @@ defaults:
 name: flw_dataset
 path: /media/admin_flw/Volume/LEOD_FLW/datasets/flw_dataset
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
-sequence_length: 1
-resolution_hw: [240, 304] #[480, 640]
-ev_repr_hw: [240, 304]
+sequence_length: 21
+resolution_hw: [240, 304]  ###[360, 640] #[480, 640]
+ev_repr_hw: [240, 304]  ###[360, 640]
 downsample_by_factor_2: False
 only_load_end_labels: False
+
 
 train_ratio: 1.0
 test_ratio: 0.8
@@ -20,6 +21,6 @@ data_augmentation:
      prob_hflip: 0.5
      prob_tflip: 0.5
   stream:
-    prob_hflip: 0.4
+    prob_hflip: 0.5
     prob_tflip: 0.5
 

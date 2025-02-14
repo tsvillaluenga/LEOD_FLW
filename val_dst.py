@@ -30,7 +30,7 @@ from data.utils.types import DataType
 from nerv.utils import AverageMeter, glob_all
 
 empty_box = torch.zeros((0, 8)).float()
-empty_box = ObjectLabels(empty_box, input_size_hw=(360, 640))
+empty_box = ObjectLabels(empty_box, input_size_hw=(240, 304))    	###height=360, width=640
 
 
 def filter_bbox(pred, obj_thresh=0.9, cls_thresh=0.9, ignore_label=1024):

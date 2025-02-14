@@ -140,7 +140,7 @@ def _coco_eval(gts, detections, height, width, labelmap=("car", "pedestrian"), r
         return out_dict
 
 
-def _to_coco_format(gts, detections, categories, height=240, width=304):
+def _to_coco_format(gts, detections, categories, height=240, width=304):	###height=360, width=640
     """
     utilitary function producing our data in a COCO usable format
     """

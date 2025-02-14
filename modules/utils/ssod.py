@@ -12,8 +12,8 @@ from utils.bbox import xyxy2xywh, get_bbox_coords, construct_bbox
 from models.detection.yolox.utils import bboxes_iou
 from utils.evaluation.prophesee.evaluator import get_labelmap
 
-DATASET2HEIGHT = {'gen1': 240, 'gen4': 720, 'flw_dataset': 240}
-DATASET2WIDTH = {'gen1': 304, 'gen4': 1280, 'flw_dataset': 304}
+DATASET2HEIGHT = {'gen1': 240, 'gen4': 720, 'flw_dataset': 240}	###360
+DATASET2WIDTH = {'gen1': 304, 'gen4': 1280, 'flw_dataset': 304}	###640
 
 
 def get_subsample_label_idx(L: int,

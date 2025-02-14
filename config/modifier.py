@@ -48,7 +48,7 @@ def dynamically_modify_train_config(config: DictConfig):
             backbone_name = backbone_cfg.name
             if backbone_name == 'MaxViTRNN':
                 partition_split_32 = backbone_cfg.partition_split_32
-                assert partition_split_32 in (1, 2, 3, 4)  # gen1: 1, gen4: 2, flw: 3
+                assert partition_split_32 in (1, 2, 3, 4)  # gen1: 1, gen4: 2, ####flw: 3
 
                 multiple_of = 32 * partition_split_32
                 mdl_hw = _get_modified_hw_multiple_of(hw=dataset_hw, multiple_of=multiple_of)

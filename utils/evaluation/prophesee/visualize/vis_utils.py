@@ -17,7 +17,7 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 LABELMAP_GEN1 = ("car", "pedestrian")
 LABELMAP_GEN4 = ('pedestrian', 'two wheeler', 'car', 'truck', 'bus', 'traffic sign', 'traffic light')
 LABELMAP_GEN4_SHORT = ('pedestrian', 'two wheeler', 'car')
-LABELMAP_FLW = ("crate", "human")
+LABELMAP_FLW = ("zivid", "human")
 
 
 def get_labelmap(dst_name):
@@ -31,7 +31,7 @@ def get_labelmap(dst_name):
 
 
 
-def make_binary_histo(events, img=None, width=304, height=240):
+def make_binary_histo(events, img=None, width=304, height=240):    #width=640, height=360
     """
     simple display function that shows negative events as blacks dots and positive as white one
     on a gray background
@@ -74,7 +74,7 @@ def draw_bboxes_bbv(img, boxes, labelmap=LABELMAP_GEN1) -> np.ndarray:
             0: (0, 0, 255),  # cra -> blue (rgb)
             1: (255, 255, 0),  # hum -> yellow (rgb)
         }
-        scale_multiplier = 1
+        scale_multiplier = 2
     else:
         assert labelmap == LABELMAP_GEN4_SHORT
         classid2colors = {

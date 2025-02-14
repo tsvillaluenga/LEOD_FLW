@@ -2,9 +2,10 @@ defaults:
   - base
 
 name: gen1
-path: /media/admin_flw/Volume/TUD_Thesis/Gen1Mpx_datasets/Gen1
+path: /media/admin_flw/Volume/TUD_Thesis/Gen1Mpx_datasets/Gen1     ###/media/admin_flw/Volume/LEOD_FLW/datasets/flw_dataset 
 ev_repr_name: 'stacked_histogram_dt=50_nbins=10'
 sequence_length: 21
 resolution_hw: [240, 304]
 downsample_by_factor_2: False
 only_load_end_labels: False
+

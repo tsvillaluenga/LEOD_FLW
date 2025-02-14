@@ -750,7 +750,7 @@ class SparselyBatchedObjectLabels:
 
 
 if __name__ == '__main__':
-    input_size = (240, 304)
+    input_size = (240, 304)	###(360, 640)
     object_labels = ObjectLabels(th.tensor([[9.1000e+06, 1.9500e+02, 1.4000e+02, 5.2000e+01, 3.8000e+01, 0.0000e+00, 1.0000e+00, 1.0000e+00], [9.1000e+06, 1.9500e+02, 1.4000e+02, 5.2000e+01, 3.8000e+01, 0.0000e+00, 1.0000e+00, 1.0000e+00]]), input_size)
     zoom_coordinates_x0y0 = (42, 52)
     zoom_factor = 1.321398913860321
