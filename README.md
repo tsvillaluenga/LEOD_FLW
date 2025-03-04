@@ -1,32 +1,8 @@
 # LEOD
 
-This is the official Pytorch implementation for our CVPR 2024 paper:
+This is a FORK of LEOD (Label-Efficient Object Detection for Event Cameras) repository: (https://github.com/Wuziyi616/LEOD)
 
-[**LEOD: Label-Efficient Object Detection for Event Cameras**](https://arxiv.org/abs/2311.17286)<br/>
-[Ziyi Wu](https://wuziyi616.github.io/),
-[Mathias Gehrig](https://magehrig.github.io/),
-Qing Lyu,
-Xudong Liu,
-[Igor Gilitschenski](https://tisl.cs.utoronto.ca/author/igor-gilitschenski/)<br/>
-_CVPR'24 |
-[GitHub](https://github.com/Wuziyi616/LEOD?tab=readme-ov-file#leod) |
-[arXiv](https://arxiv.org/abs/2311.17286)_
-
-<p align="center">
-  <img src="./assets/det-results.png" width="900">
-</p>
-
-## TL;DR
-
-[Event cameras](https://tub-rip.github.io/eventvision2023/#null) are bio-inspired low-latency sensors, which hold great potentials for safety-critical applications such as object detection in self-driving.
-Due to the high temporal resolution (>1000 FPS) of event data, existing datasets are annotated at a low frame rate (e.g., 4 FPS).
-As a result, models are only trained on these annotated frames, leading to sub-optimal performance and slow convergence speed.
-In this paper, we tackle this problem from the perspective of weakly-/semi-supervised learning.
-We design a novel self-training framework that pseudo-labels unannotated events with reliable model predictions, which achieves SOTA performance on two largest detection benchmarks.
-
-<p align="center">
-  <img src="./assets/LEOD.png" width="800">
-</p>
+Paper: [**LEOD: Label-Efficient Object Detection for Event Cameras**](https://arxiv.org/abs/2311.17286)<br/>
 
 ## Install
 
@@ -35,31 +11,36 @@ Please refer to [install.md](./docs/install.md) for detailed instructions.
 
 ## Experiments
 
-**This codebase is tailored to [Slurm](https://slurm.schedmd.com/documentation.html) GPU clusters with preemption mechanism.**
-There are some functions in the code (e.g. auto-detect and load previous checkpoints) which you might not need.
-Please go through all fields marked with `TODO` in `train.py` in case there is any conflict with your environment.
-To reproduce the results in the paper, please refer to [benchmark.md](docs/benchmark.md).
+**To preprocess data and create annotations, please refer to [preprocess.md](docs/preprocess.md).**
 
-## Citation
+**To reproduce the results in the paper, please refer to [benchmark.md](docs/benchmark.md).**
 
-Please cite our paper if you find it useful in your research:
-```bibtex
-@inproceedings{wu2024leod,
-  title={LEOD: Label-Efficient Object Detection for Event Cameras},
-  author={Wu, Ziyi and Gehrig, Mathias and Lyu, Qing and Liu, Xudong and Gilitschenski, Igor},
-  booktitle={CVPR},
-  year={2024}
-}
-```
 
-## Acknowledgement
 
-We thank the authors of [RVT](https://github.com/uzh-rpg/RVT), [SORT](https://github.com/abewley/sort), [Soft Teacher](https://github.com/microsoft/SoftTeacher), [Unbiased Teacher](https://github.com/facebookresearch/unbiased-teacher) and all the packages we use in this repo for opening source their wonderful works.
+## Required Data
+To evaluate or train LEOD or RVT you will need to download the required preprocessed datasets:
 
-## License
+<table><tbody>
+<th valign="bottom"></th>
+<th valign="bottom">FLW dataset</th>
+<tr><td align="left">pre-processed dataset</td>
+<td align="center"><a href="https://www.mediafire.com/file/cuetnzn63qxx9rq/flw_dataset.tar.gz/file">download</a></td></tr>
+</tbody></table>
 
-LEOD is released under the MIT License. See the LICENSE file for more details.
+You may also pre-process the dataset yourself by following the [instructions](docs/benchmark.md).
+
+## Pre-trained Checkpoints
+### FLW_dataset
+<table><tbody>
+<th valign="bottom"></th>
+<th valign="bottom">FLW Dataset</th>
+<tr><td align="left">pre-trained checkpoint</td>
+<td align="center"><a href="https://download.ifi.uzh.ch/rpg/RVT/checkpoints/1mpx/rvt-b.ckpt">download</a></td>
+</tr>
+</tbody></table>
+
+
 
 ## Contact
 
-If you have any questions about the code, please contact Ziyi Wu dazitu616@gmail.com
+If you have any questions about the code, please contact Tomas Sanchez Villaluenga tsvillaluenga@hotmail.com
