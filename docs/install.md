@@ -38,25 +38,19 @@ To avoid this issue, go to [coco_eval.py](../utils/evaluation/prophesee/metrics/
 
 ## Dataset
 
-In this project, we use two datasets: Gen1 and 1Mpx.
-Following the convention of RVT, we name Gen1 as `gen1` and 1Mpx as `gen4` (because of the camera used to capture them).
+In this project, we use the FLW datasets.
+Following the convention of RVT, we name FLW Dataset as `flw_dataset`
+
 Please download the pre-processed datasets from RVT:
 
 <table><tbody>
 <th valign="bottom"></th>
-<th valign="bottom">1 Mpx</th>
-<th valign="bottom">Gen1</th>
+<th valign="bottom">FLW Dataset</th>
 <tr><td align="left">pre-processed dataset</td>
-<td align="center"><a href="https://download.ifi.uzh.ch/rpg/RVT/datasets/preprocessed/gen4.tar">download</a></td>
-<td align="center"><a href="https://download.ifi.uzh.ch/rpg/RVT/datasets/preprocessed/gen1.tar">download</a></td>
-</tr>
-<tr><td align="left">crc32</td>
-<td align="center"><tt>c5ec7c38</tt></td>
-<td align="center"><tt>5acab6f3</tt></td>
-</tr>
+<td align="center"><a href="https://www.mediafire.com/file/cuetnzn63qxx9rq/flw_dataset.tar.gz/file">download</a></td></tr>
 </tbody></table>
 
-After downloading and unzipping the datasets, soft link Gen1 to `./datasets/gen1` and 1Mpx to `./datasets/gen4`.
+After downloading and unzipping the datasets, soft link to `./datasets/flw_dataset`.
 
 ### Data Splits
 
@@ -78,10 +72,11 @@ We provide checkpoints for all the models used to produce the final performance 
 In addition, we provide models pre-trained on the limited annotated data (the `Supervised Baseline` method in the paper) to ease your experiments.
 
 Please download the pre-trained weights from [Google Drive](https://drive.google.com/file/d/1xBzFovvNbrtBt0YwYcvvrjbV8ozAdCUK/view?usp=sharing) and unzip them to `./pretrained/`.
+
 The weights are grouped by the Section they are presented in the paper.
 They naming follows the pattern `rvt-{$MODEL_SIZE}-{$DATASET}x{$RATIO_OF_DATA}_{$SETTING}.ckpt`.
 
-For example, `rvt-s-gen1x0.02_ss.ckpt` is the RVT-S pre-trained on 2% of Gen1 data under the weakly-supervised setting.
-`rvt-s-gen4x0.05_ss-final.ckpt` is the RVT-S trained on 5% of 1Mpx data under the semi-supervised setting, and `-final` means it is the LEOD self-trained model (used to produce the results in the paper).
+For example, `rvt-s-flwx0.02_ss.ckpt` is the RVT-S pre-trained on 2% of FLW_Dataset data under the weakly-supervised setting.
+`rvt-s-flwx0.05_ss-final.ckpt` is the RVT-S trained on 5% of FLW_Dataset data under the semi-supervised setting, and `-final` means it is the LEOD self-trained model (used to produce the results in the paper).
 
 **Note:** it might be a bit confusing, but `ss` means weakly-supervised (all event sequences are sparsely labeled) and `seq` means semi-supervised (some event sequences are densely labeled, while others are completely unlabeled).
