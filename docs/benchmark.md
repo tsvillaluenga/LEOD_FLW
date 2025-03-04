@@ -1,67 +1,53 @@
 # Benchmark
 
-Please make sure you have downloaded the pre-trained weights following instructions in [install.md](https://github.com/Wuziyi616/LEOD/blob/main/docs/install.md#pre-trained-weights).
+Please make sure you have downloaded the pre-trained weights following instructions in [install.md](https://github.com/tsvillaluenga/LEOD_FLW/blob/main/docs/install.md#pre-trained-weights).
+
 
 ## Evaluation
 
 To evaluate a pre-trained model, set the `dataset`, `dataset.path`, and `checkpoint` fields accordingly.
 
 ```Bash
-# Gen1 (1649it in total, 470 full sequences)
-python val.py model=rnndet dataset=gen1 dataset.path=./datasets/gen1/ \
+python val.py model=rnndet dataset=flw_dataset dataset.path=./datasets/flw_dataset/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss-final.ckpt" \
-  use_test_set=1 hardware.gpus=0 hardware.num_workers.eval=8 +experiment/gen1="small.yaml" \
-  batch_size.eval=16 model.postprocess.confidence_threshold=0.001 reverse=False tta.enable=False
-
-# Gen4 (1Mpx) (3840it in total, 120 full sequences)
-python val.py model=rnndet dataset=gen4 dataset.path=./datasets/gen4/ \
-  checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen4-WSOD/rvt-s-gen4x0.01_ss-final.ckpt" \
-  use_test_set=1 hardware.gpus=0 hardware.num_workers.eval=8 +experiment/gen4="small.yaml" \
-  batch_size.eval=8 model.postprocess.confidence_threshold=0.001 reverse=False tta.enable=False
+  use_test_set=1 hardware.gpus=0 hardware.num_workers.eval=2 +experiment/flw_dataset="small.yaml" \
+  batch_size.eval=4 model.postprocess.confidence_threshold=0.001 reverse=False tta.enable=False
 ```
 
 We also support the `reverse` flag which tests the model on event sequences in the reverse-time order, and `tta.enable` which enables Test-Time Augmentation (model prediction ensembled over horizontal and temporal flip).
 
-**Note:** the `model.postprocess.confidence_threshold` field makes some differences in the final mAP (~1% on Gen1 and up to 3% on 1Mpx), depending on how many false positives your model generates.
-In the model training below, we use wandb to log intermediate results including mAP.
-They are usually lower than the final results because we use a higher confidence threshold to speed up inference.
-To obtain the final mAP, make sure to run the above evaluation commands.
 
 ### Visualize the detection results
 
 You can apply RVT to the entire event sequence and get continuous detection results as videos:
 
 ```Bash
-python vis_pred.py model=rnndet dataset=gen1 dataset.path=./datasets/gen1/ \
+python vis_pred.py model=rnndet dataset=flw_dataset dataset.path=./datasets/flw_dataset/ \
   checkpoint=xxx.ckpt +experiment/gen1="small.yaml" \
   model.postprocess.confidence_threshold=0.1 num_video=5 reverse=False
 ```
 
-The mp4 files will be saved to `./vis/gen1_rnndet_small/pred/`.
-Below is one example running RVT-B on Gen1.
+The mp4 files will be saved to `./vis/flw_dataset_rnndet_small/pred/`.
+Below is one example running RVT-B on FLW_Dataset.
 We pause the stream for 0.5s at every labeled frames to better see the detection results.
 The predicted bboxes (with predicted cls and obj scores) are in green, while the GT bboxes are in black.
 The frame index and timestamp are also shown at the top-left corner.
 
-https://github.com/Wuziyi616/LEOD/assets/37072215/ae898b28-0b8a-4311-a9fd-6271ce54d1b6
+Sometimes could be a problem `num_video = 5`. If it is, increment the number of `num_video` drastically.
+
 
 ## Training
 
 ### Pre-train on data with limited annotations
 
-Make sure to understand the data splits used in this project described in [install.md](https://github.com/Wuziyi616/LEOD/blob/main/docs/install.md#data-splits).
+Make sure to understand the data splits used in this project described in [install.md](https://github.com/tsvillaluenga/LEOD_FLW/blob/main/docs/install.md#data-splits).
 
 We follow RVT for most of the settings, e.g., batch size, learning rate.
 The biggest change we made is early stopping to prevent overfitting.
 
 ```Bash
-# Gen1 （1 GPU, batch_size=8 per GPU)
-python train.py model=rnndet hardware.gpus=0 dataset=gen1x0.01_ss \
-  +experiment/gen1="small.yaml" training.max_steps=200000
-
-# Gen4 (1Mpx) (2 GPUs, batch_size=12 per GPU)
-python train.py model=rnndet hardware.gpus=[0,1] dataset=gen4x0.01_ss \
-  +experiment/gen4="small.yaml" training.max_steps=200000
+python train.py model=rnndet hardware.gpus=0 dataset=flwx0.01_ss \
+  +experiment/flw_dataset="small.yaml" training.max_steps=200000
 ```
 
 Please refer to Appendix A.2 in the paper for different training steps we use under different ratio of data.
@@ -80,17 +66,10 @@ Note that labels are saved as `.npy` files, while the events are soft-linked ins
 The entire eval/test sets are also soft-linked.
 
 ```Bash
-# Gen1 (11376it, ~7h on a T4 GPU, size is 100-150 MB)
-python predict.py model=pseudo_labeler dataset=gen1x0.01_ss dataset.path=./datasets/gen1/ \
+python predict.py model=pseudo_labeler dataset=flwx0.01_ss dataset.path=./datasets/flw_dataset/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss.ckpt" \
-  hardware.gpus=0 +experiment/gen1="small.yaml" model.postprocess.confidence_threshold=0.01 \
-  tta.enable=True save_dir=./datasets/pseudo_gen1/gen1x0.01_ss-1round/train
-
-# Gen4 (27044it, ~10h on a T4 GPU, size is 200-250 MB)
-python predict.py model=pseudo_labeler dataset=gen4x0.01_ss dataset.path=./datasets/gen4/ \
-  checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen4-WSOD/rvt-s-gen4x0.01_ss.ckpt" \
-  hardware.gpus=0 +experiment/gen4="small.yaml" model.postprocess.confidence_threshold=0.01 \
-  tta.enable=True save_dir=./datasets/pseudo_gen4/gen4x0.01_ss-1round/train
+  hardware.gpus=0 +experiment/flw_dataset="small.yaml" model.postprocess.confidence_threshold=0.01 \
+  tta.enable=True save_dir=./datasets/pseudo_flw/flwx0.01_ss-1round/train
 ```
 
 This script also run tests to ensure that the saved labels are in the correct format.
@@ -102,32 +81,21 @@ You may want to inspect the quality of the generated pseudo labels, e.g., their 
 We provide scripts for doing this:
 
 ```Bash
-# Gen1 (2839 iter)
-python val_dst.py model=pseudo_labeler dataset=gen1x0.01_ss \
-  dataset.path=./datasets/pseudo_gen1/gen1x0.01_ss-1round checkpoint=1 \
-  +experiment/gen1="small.yaml" model.pseudo_label.obj_thresh=0.01 model.pseudo_label.cls_thresh=0.01
-
-# Gen4 (6764 iter)
-python val_dst.py model=pseudo_labeler dataset=gen4x0.01_ss \
-  dataset.path=./datasets/pseudo_gen4/gen4x0.01_ss-1round checkpoint=1 \
-  +experiment/gen4="small.yaml" model.pseudo_label.obj_thresh=0.01 model.pseudo_label.cls_thresh=0.01
+python val_dst.py model=pseudo_labeler dataset=flwx0.01_ss \
+  dataset.path=./datasets/pseudo_flw/flwx0.01_ss-1round checkpoint=1 \
+  +experiment/flw_dataset="small.yaml" model.pseudo_label.obj_thresh=0.01 model.pseudo_label.cls_thresh=0.01
 ```
 
 ### Self-training on pseudo labels
 
 Since our pseudo labels are saved in the same format as real labels, the training commands are almost the same.
 You can simply copy an existing dataset config and change the path to the path of the pseudo dataset.
-Also remember to set `ratio` (WSOD) and `train_ratio` (SSOD) to -1, so that we use all the pseudo labels.
-We provide one such example at [gen1x0.01_ss-1round.yaml](../config/dataset/gen1x0.01_ss-1round.yaml).
+**Also remember to set `ratio` (WSOD) and `train_ratio` (SSOD) to -1**, so that we use all the pseudo labels.
+We provide one such example at [flwx0.01_ss-1round.yaml](../config/dataset/flwx0.01_ss-1round.yaml).
 
 ```Bash
-# Gen1 （1 GPU, batch_size=8 per GPU)
-python train.py model=rnndet-soft hardware.gpus=0 dataset=gen1x0.01_ss-1round \
-  +experiment/gen1="small.yaml" training.max_steps=150000 training.learning_rate=0.0005
-
-# Gen4 (1Mpx) (2 GPUs, batch_size=12 per GPU)
-python train.py model=rnndet-soft hardware.gpus=[0,1] dataset=gen4x0.01_ss-1round \
-  +experiment/gen4="small.yaml" training.max_steps=150000 training.learning_rate=0.0005
+python train.py model=rnndet-soft hardware.gpus=0 dataset=flwx0.01_ss-1round \
+  +experiment/flw_dataset="small.yaml" training.max_steps=150000 training.learning_rate=0.0005
 ```
 
 Note that the model config here is `rnndet-soft`, which enables soft anchor assignment compared to vanilla `rnndet`.
@@ -146,6 +114,6 @@ In this project, there are two settings (WSOD, SSOD) each with several different
 It is very easy to make mistakes when running commands.
 Here are some common error messages and their solutions:
 - If you see lots of shape mismatch errors when trying to load a pre-trained weight, it might be:
-  - You use the wrong model size (RVT-S vs RVT-B). Please check the `+experiment/gen1="xxx.yaml"` field;
+  - You use the wrong model size (RVT-S vs RVT-B). Please check the `+experiment/flw_dataset="xxx.yaml"` field;
   - The dataset is wrong (e.g. testing a Gen1 trained model on 1Mpx). Please check the `dataset=xxx` field;
 - If you see AssertionError saying the data/pseudo label formats are wrong, it is likely that you set the wrong data path or the wrong dataset config. Please check the `dataset=xxx` field.
