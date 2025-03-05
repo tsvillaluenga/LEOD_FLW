@@ -37,7 +37,7 @@ def create_grayscale_image(events, target_width, target_height, original_width=6
 
 # Ensure the script receives the required arguments
 if len(sys.argv) != 3:
-    print("Usage: python3 nombre.py <rosbag_path> <output_dir>")
+    print("Usage: python3 rosbag_extraction.py <rosbag_path> <output_dir>")
     sys.exit(1)
 
 # Get the arguments from the command line
@@ -84,4 +84,3 @@ for i, (topic, msg, t) in enumerate(bag.read_messages(topics=['/dvxplorer_left/e
 
 bag.close()
 print("Finished processing all messages.")
-

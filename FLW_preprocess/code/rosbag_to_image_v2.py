@@ -43,14 +43,14 @@ for carpeta in os.listdir(rosbags_dir):
 
         # Step 2: Extract left camera events
         if bag_file.stem.startswith("left"):
-            execute_command("cd /root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset", use_bash=True)
-            ros_events_script = "/root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset/update/rosbag_extraction.py"
+            execute_command("cd /root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset/update", use_bash=True)
+            ros_events_script = "./rosbag_extraction.py"
             execute_command(f"python3.8 {ros_events_script} {rosbag_path} {output_dir}")
         
         # Step 3: Extract rgb images
         if not bag_file.stem.startswith("left") and not bag_file.stem.startswith("right"):
-            execute_command("cd /root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset", use_bash=True)
-            ros_events_script = "/root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset/update/rosbag_rgb_extraction.py"
+            execute_command("cd /root/TUD_Thesis/RVT_FLW_Dataset_Github-main/FLW_Dataset/update", use_bash=True)
+            ros_events_script = "./rosbag_rgb_extraction.py"
             execute_command(f"python3.8 {ros_events_script} {rosbag_path} {output_dir}")
 
 print("Processing complete.")

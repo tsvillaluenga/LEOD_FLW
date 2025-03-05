@@ -4,54 +4,54 @@ import rosbag
 import numpy as np
 import h5py
 
-def load_timestamps_set_from_npz(npz_path):
+def loadTimestampsSetFromNpz(npz_path):
     """
-    Verifica si timestamp_ns existe en la primera columna de npz_path.
-    Retorna True si existe, False en caso contrario.
+    Checks if timestamp_ns exists in the first column of npz_path.
+    Returns True if it exists, False otherwise.
     """
-    # Cargamos los datos (usa allow_pickle=True si tu .npz lo requiere)
+    # Load the data (use allow_pickle=True if your .npz requires it)
     data = np.load(npz_path, allow_pickle=True)
     
-    # Extraemos la matriz "labels" (ajusta el nombre según tu .npz)
+    # Extract the "labels" matrix (adjust the name according to your .npz)
     labels = data['labels']
     
-    # labels.shape se espera (N,). Cada elemento de 'labels' 
-    # debe ser una secuencia con 8 elementos, 
-    # donde el [0] es el timestamp grande.
+    # labels.shape is expected to be (N,). Each element of 'labels'
+    # should be a sequence with 8 elements,
+    # where the [0] is the large timestamp.
     first_col = [row[0] for row in labels]
     
-    # Convertimos a int64, por si vienen como float
+    # Convert to int64, in case they come as float
     first_col = np.array(first_col, dtype=np.int64)
     
-    # Retornamos un set para búsquedas en O(1) promedio
+    # Return a set for average O(1) lookups
     return set(first_col)
 
 
-def process_bag_directory(output_base_dir):
+def processBagDirectory(output_base_dir):
     """
-    Esta función contiene la lógica para procesar una carpeta (output_base_dir) que 
-    contenga exactamente un archivo .bag. Realiza las mismas operaciones que tu 
-    script original.
+    This function contains the logic to process a folder (output_base_dir) that
+    contains exactly one .bag file. It performs the same operations as your
+    original script.
     """
 
     # =========================================================================
-    # 1. LOCALIZAR EL ARCHIVO .BAG (se asume que sólo hay uno en la carpeta)
+    # 1. LOCATE THE .BAG FILE (it is assumed that there is only one in the folder)
     # =========================================================================
     bag_files = [f for f in os.listdir(output_base_dir) if f.endswith('.bag')]
     if len(bag_files) == 0:
-        print(f"[ADVERTENCIA] No se encontró ningún archivo '.bag' en {output_base_dir}. Se omite esta carpeta.")
+        print(f"[WARNING] No '.bag' file found in {output_base_dir}. Skipping this folder.")
         return
     elif len(bag_files) > 1:
-        print(f"[ADVERTENCIA] Se encontró más de un archivo '.bag' en {output_base_dir}. Se tomará el primero y se omiten los demás.")
+        print(f"[WARNING] More than one '.bag' file found in {output_base_dir}. The first one will be taken and the others will be ignored.")
     
     rosbag_path = os.path.join(output_base_dir, bag_files[0])
-    print(f"\nProcesando carpeta: {output_base_dir}")
-    print(f"Archivo .bag encontrado: {rosbag_path}")
+    print(f"\nProcessing folder: {output_base_dir}")
+    print(f".bag file found: {rosbag_path}")
 
     # =========================================================================
-    # 2. DEFINIR RUTAS DE SALIDA
+    # 2. DEFINE OUTPUT PATHS
     # =========================================================================
-    # Repite la lógica original para definir tus rutas de salida
+    # Repeat the original logic to define your output paths
     output_dir = os.path.join(output_base_dir, "event_representations_v2/stacked_histogram_dt=50_nbins=10")
     hdf5_file_path = os.path.join(output_dir, 'event_representations.h5')
     timestamps_file_path = os.path.join(output_dir, 'timestamps_us.npy')
@@ -61,16 +61,16 @@ def process_bag_directory(output_base_dir):
     labels_path = os.path.join(output_base_dir, "images/visualized_images/labels_v2/labels.npz")
     
     # =========================================================================
-    # 3. CREACIÓN DE DIRECTORIOS
+    # 3. CREATE DIRECTORIES
     # =========================================================================
     os.makedirs(output_dir, exist_ok=True)
-    print(f"Output directory creado en: {output_dir}")
+    print(f"Output directory created at: {output_dir}")
 
     # =========================================================================
-    # 4. INICIALIZACIÓN DE VARIABLES
+    # 4. INITIALIZE VARIABLES
     # =========================================================================
-    histogram_bins = 20      # Número de bins en cada histograma
-    time_interval = 50000000    # Intervalo de 50 us (en microsegundos)
+    histogram_bins = 20      # Number of bins in each histogram
+    time_interval = 50000000    # Interval of 50 us (in microseconds)
     height, width = 240, 304 # TARGET DIMENSIONS
     
     # ORIGINAL DIMENSIONS
@@ -87,114 +87,114 @@ def process_bag_directory(output_base_dir):
     relative_start_time = 0
     current_bin_start_time = 0
 
-    print("Variables de histograma inicializadas.")
+    print("Histogram variables initialized.")
 
     # =========================================================================
-    # 5. CARGA DE TIMESTAMPS EXTERNOS
+    # 5. LOAD EXTERNAL TIMESTAMPS
     # =========================================================================
     try:
         external_timestamps = np.load(external_timestamps_file_path)
     except FileNotFoundError:
-        print(f"[ERROR] No se encontró el archivo de timestamps externos: {external_timestamps_file_path}")
-        print("Omitiendo esta carpeta...\n")
+        print(f"[ERROR] External timestamps file not found: {external_timestamps_file_path}")
+        print("Skipping this folder...\n")
         return
 
-    print(f"Timestamps externos cargados desde: {external_timestamps_file_path}")
+    print(f"External timestamps loaded from: {external_timestamps_file_path}")
 
-    # Ajuste: si los timestamps externos están en ns, convertirlos a µs
+    # Adjustment: if external timestamps are in ns, convert them to µs
     external_timestamps = external_timestamps ########// 1000
 
     # =========================================================================
-    # 6. FUNCIÓN PARA OBTENER TIEMPOS MÍNIMO Y MÁXIMO DE LAS IMÁGENES PNG
+    # 6. FUNCTION TO FIND MINIMUM AND MAXIMUM TIMES FROM PNG IMAGES
     # =========================================================================
     def low_high_num_finder(folder_path):
-        # Verifica que la carpeta exista
+        # Verify that the folder exists
         if not os.path.isdir(folder_path):
-            raise ValueError(f"La carpeta '{folder_path}' no existe.")
+            raise ValueError(f"The folder '{folder_path}' does not exist.")
         
         files_png = [f for f in os.listdir(folder_path) if f.endswith('.png')]
         if not files_png:
-            raise ValueError("No se encontraron archivos .png en la carpeta.")
+            raise ValueError("No .png files found in the folder.")
         
-        # Extrae números de los nombres de archivo
+        # Extract numbers from file names
         numbers = []
         for archivo in files_png:
-            match = re.search(r'\d+', archivo)  # Busca un número en el nombre
+            match = re.search(r'\d+', archivo)  # Search for a number in the name
             if match:
                 numbers.append(int(match.group()))
         
         if not numbers:
-            raise ValueError("No se encontraron números en los nombres de los archivos .png.")
+            raise ValueError("No numbers found in the .png file names.")
         
-        # Encuentra el valor mínimo y máximo
+        # Find the minimum and maximum values
         lower = min(numbers)
         higher = max(numbers)
         return lower, higher
 
     # =========================================================================
-    # 7. DEFINICIÓN DE TIEMPOS DE INICIO Y FIN
+    # 7. DEFINE START AND END TIMES
     # =========================================================================
     try:
         specified_start_time, specified_end_time = low_high_num_finder(visualized_img_path)
     except ValueError as e:
         print(f"[ERROR]: {str(e)}")
-        print("Omitiendo esta carpeta...\n")
+        print("Skipping this folder...\n")
         return
 
-    # timestamps en ns
+    # timestamps in ns
     specified_start_time = specified_start_time 
     specified_end_time = specified_end_time 
     print(f"Specified_start_time: {specified_start_time}")
     print(f"Specified_end_time: {specified_end_time}")
 
-    # Ajuste del tiempo de inicio para que coincida con el intervalo
+    # Adjust the start time to match the interval
     start_time_adjustment = specified_start_time - (specified_start_time % time_interval)
-    print(f"Tiempo de inicio ajustado a {start_time_adjustment} para incluir timestamps especificados")
+    print(f"Start time adjusted to {start_time_adjustment} to include specified timestamps")
 
     # =========================================================================
-    # 8. PROCESAMIENTO DE EVENTOS DESDE EL ROSBAG
+    # 8. PROCESS EVENTS FROM THE ROSBAG
     # =========================================================================
     
-    # Comprobacion timestamps labels y eventos
-    timestamps_set = load_timestamps_set_from_npz(labels_path)
-    print(f"Se han cargado {len(timestamps_set)} timestamps desde {labels_path}.")
+    # Check labels and events timestamps
+    timestamps_set = loadTimestampsSetFromNpz(labels_path)
+    print(f"Loaded {len(timestamps_set)} timestamps from {labels_path}.")
     
     try:
         with rosbag.Bag(rosbag_path, 'r') as bag:
-            print(f"Archivo ROS bag abierto: {rosbag_path}")
+            print(f"Opened ROS bag file: {rosbag_path}")
             try:
                 for topic, msg, t in bag.read_messages(topics=['/dvxplorer_left/events']):
                     for event in msg.events:
-                        # Convierte el timestamp del evento a microsegundos
+                        # Convert the event's timestamp to microseconds
                         timestamp_ns = t.to_nsec() 
                     ### üDEBUG] ### print(timestamp_ns)
                         
-                        # Verifica si existe en la primera columna de tu archivo .npz
+                        # Check if it exists in the first column of your .npz file
                         if timestamp_ns not in timestamps_set:
                             continue
                         else:
-                            # # Inicializa start_time con el primer evento
+                            # # Initialize start_time with the first event
                             # if start_time is None:
                             #     start_time = timestamp_ns
                             #     relative_start_time = start_time_adjustment
                             #     current_bin_start_time = start_time_adjustment
-                            #     print(f"Tiempo de inicio configurado a {start_time} microsegundos")
+                            #     print(f"Start time set to {start_time} microseconds")
                     ### üDEBUG] ### print(f"{timestamp_ns}: IN")
                             if start_time is None:
                                 start_time = timestamp_ns
-                                start_time_adjustment = start_time - (start_time % time_interval)  # Ajustado al primer evento válido
+                                start_time_adjustment = start_time - (start_time % time_interval)  # Adjusted to the first valid event
                                 relative_start_time = start_time_adjustment
                                 current_bin_start_time = start_time_adjustment
-                                print(f"Tiempo de inicio ajustado a {start_time_adjustment} para incluir timestamps especificados")
+                                print(f"Start time adjusted to {start_time_adjustment} to include specified timestamps")
 
                             
-                            # Calcula el tiempo relativo a partir del tiempo de inicio ajustado
+                            # Calculate the relative time from the adjusted start time
                             relative_time = timestamp_ns - start_time + start_time_adjustment
                             if relative_time < start_time_adjustment:
                     ### üDEBUG] ### print(f"{timestamp_ns}: relative_time < start_time_adjustment")
                                 continue
 
-                            # Determina el índice de bin correspondiente para el evento
+                            # Determine the corresponding bin index for the event
                             bin_idx = (relative_time - current_bin_start_time) // time_interval
                             #print(f"{timestamp_ns}: ¿¿{bin_idx} >= {histogram_bins}??")
                             #print(f"{timestamp_ns}: ------------ ¿¿¿{relative_time} - ({current_bin_start_time}, {current_bin_start_time+time_interval}) = {relative_time - current_bin_start_time}???")
@@ -203,75 +203,75 @@ def process_bag_directory(output_base_dir):
                             while relative_time >= (current_bin_start_time + time_interval): ##bin_idx >= histogram_bins:
                                 stacked_histograms.append(current_histogram)
                                 timestamps.append([current_bin_start_time, current_bin_start_time + time_interval])
-                                print(f"Histograma y timestamps agregados. Total histograms: {len(stacked_histograms)}")
+                                print(f"Histogram and timestamps added. Total histograms: {len(stacked_histograms)}")
                                 
-                                # Reinicia el histograma para el siguiente bin
+                                # Reset the histogram for the next bin
                                 current_histogram = np.zeros((histogram_bins, height, width), dtype=np.uint8)
                                 current_bin_start_time += time_interval #(time_interval*histogram_bins)
                                 relative_start_time = current_bin_start_time
-                    ### üDEBUG] ### print(f"REINICIO HIST: ------------ current_bin_start_time: {current_bin_start_time} .. = {relative_time - current_bin_start_time}")
+                    ### üDEBUG] ### print(f"RESET HIST: ------------ current_bin_start_time: {current_bin_start_time} .. = {relative_time - current_bin_start_time}")
                                 bin_idx = (relative_time - current_bin_start_time) // time_interval
-                                print(f"Nuevo bin de histograma inicializado. Tiempo relativo actualizado a {relative_start_time} microsegundos")
+                                print(f"New histogram bin initialized. Relative time updated to {relative_start_time} microseconds")
 
                             if current_bin_start_time > specified_end_time:
-                                print(f"Se alcanzó el tiempo final: {specified_end_time}. Finalizando procesamiento.")
+                                print(f"Reached the end time: {specified_end_time}. Finishing processing.")
                                 raise StopIteration
                             
                             # MAP EVENTS TO NEW RESOLUTION
                             new_x = int(event.x * scale_x)
                             new_y = int(event.y * scale_y)
                             
-                            # Rellena el histograma con el evento
+                            # Fill the histogram with the event
                             if 0 <= new_x < width and 0 <= new_y < height:
-                    ### üDEBUG] ### print("Se GUARDA event en histograma")
+                    ### üDEBUG] ### print("Saving event in histogram")
                                 current_histogram[int(bin_idx), new_y, new_x] += 1
 
             except (KeyboardInterrupt, StopIteration):
-                print("Deteniendo procesamiento de datos...")
+                print("Stopping data processing...")
 
     except Exception as e:
-        print(f"[ERROR] Ocurrió un problema al leer {rosbag_path}: {str(e)}")
-        print("Omitiendo esta carpeta...\n")
+        print(f"[ERROR] An issue occurred while reading {rosbag_path}: {str(e)}")
+        print("Skipping this folder...\n")
         return
 
-    # Asegurarse de cubrir hasta el tiempo especificado
+    # Ensure coverage until the specified time is reached
     while current_bin_start_time <= specified_end_time:
         stacked_histograms.append(current_histogram)
         timestamps.append([current_bin_start_time, current_bin_start_time + time_interval])
-        print(f"Histograma y timestamps agregados. Total histograms: {len(stacked_histograms)}")
+        print(f"Histogram and timestamps added. Total histograms: {len(stacked_histograms)}")
         
         current_histogram = np.zeros((histogram_bins, height, width), dtype=np.uint8)
         current_bin_start_time += time_interval
 
     # =========================================================================
-    # 9. GUARDAR TIMESTAMPS EN NPY
+    # 9. SAVE TIMESTAMPS IN NPY
     # =========================================================================
-    print(f"Guardando timestamps en: {timestamps_file_path}")
+    print(f"Saving timestamps to: {timestamps_file_path}")
     np.save(timestamps_file_path, np.array(timestamps))
-    print("Timestamps guardados.")
+    print("Timestamps saved.")
 
     # =========================================================================
-    # 10. GUARDAR HISTOGRAMAS EN ARCHIVO HDF5
+    # 10. SAVE HISTOGRAMS IN HDF5 FILE
     # =========================================================================
-    print(f"Guardando histogramas en: {hdf5_file_path}")
+    print(f"Saving histograms to: {hdf5_file_path}")
     with h5py.File(hdf5_file_path, 'w') as f:
-        blosc_filter = 32001  # ID del filtro Blosc en HDF5
-        chunk_shape = (1, histogram_bins, height, width)  # Definir chunk shape
+        blosc_filter = 32001  # Blosc filter ID in HDF5
+        chunk_shape = (1, histogram_bins, height, width)  # Define chunk shape
         f.create_dataset(
             'data', 
             data=np.array(stacked_histograms),
-            compression=blosc_filter,  # Usar BLOSC
+            compression=blosc_filter,  # Use BLOSC
             chunks=chunk_shape
         )
-    print("Histogramas guardados en archivo HDF5 (BLOSC compression).")
+    print("Histograms saved in HDF5 file (BLOSC compression).")
     # # with h5py.File(hdf5_file_path, 'w') as f:
     # #     f.create_dataset('data', data=np.array(stacked_histograms))
-    # # print("Histogramas guardados en archivo HDF5.")
+    # # print("Histograms saved in HDF5 file.")
 
     # =========================================================================
-    # 11. GENERAR Y GUARDAR OBJFRAME_IDX_2_REPR_IDX BASADO EN LOS TIMESTAMPS EXTERNOS
+    # 11. GENERATE AND SAVE OBJFRAME_IDX_2_REPR_IDX BASED ON EXTERNAL TIMESTAMPS
     # =========================================================================
-    print(f"Generando objframe_idx_2_repr_idx basados en los timestamps externos...")
+    print(f"Generating objframe_idx_2_repr_idx based on external timestamps...")
 
     objframe_idx_2_repr_idx = []
     unmatched_timestamps = []
@@ -286,8 +286,8 @@ def process_bag_directory(output_base_dir):
     #             break
     #     if not matched:
     #         unmatched_timestamps.append(ts)
-    #         objframe_idx_2_repr_idx.append(-1)  # Añadir -1 si no se encuentra un bin
-    #         print(f"[WARNING] El timestamp externo {ts} no coincidió con ningún bin de histograma.")
+    #         objframe_idx_2_repr_idx.append(-1)  # Add -1 if no bin is found
+    #         print(f"[WARNING] External timestamp {ts} did not match any histogram bin.")
     
     for ts in external_timestamps:
         matched = False
@@ -298,69 +298,67 @@ def process_bag_directory(output_base_dir):
                 break
         if not matched:
             unmatched_timestamps.append(ts)
-            objframe_idx_2_repr_idx.append(len(timestamps) - 1)  # En lugar de -1, usa el último índice válido
+            objframe_idx_2_repr_idx.append(len(timestamps) - 1)  # Instead of -1, use the last valid index
 
 
-    # Asegurar que ningún índice sea mayor al número de histogramas
+    # Ensure that no index is greater than the number of histograms
     objframe_idx_2_repr_idx = np.array(objframe_idx_2_repr_idx)
-    objframe_idx_2_repr_idx[objframe_idx_2_repr_idx >= num_histograms] = num_histograms - 1  # Corregir valores fuera de rango
-    objframe_idx_2_repr_idx[objframe_idx_2_repr_idx < 0] = 0  # Límite mínimo para evitar errores
+    objframe_idx_2_repr_idx[objframe_idx_2_repr_idx >= num_histograms] = num_histograms - 1  # Correct out-of-range values
+    objframe_idx_2_repr_idx[objframe_idx_2_repr_idx < 0] = 0  # Minimum limit to avoid errors
 
-    # Ordenar el array en orden ascendente
+    # Sort the array in ascending order
     objframe_idx_2_repr_idx = sorted(objframe_idx_2_repr_idx)
-    print(f"objframe_idx_2_repr_idx ordenado: {objframe_idx_2_repr_idx}")
+    print(f"objframe_idx_2_repr_idx sorted: {objframe_idx_2_repr_idx}")
     
     ##################################################################
-    # Asegurar que objframe_idx_2_repr_idx es un numpy array
+    # Ensure that objframe_idx_2_repr_idx is a numpy array
     objframe_idx_2_repr_idx = np.array(objframe_idx_2_repr_idx, dtype=int)
 
-    # Verificar índices antes de guardar
-    print(f"Cantidad total de histogramas generados: {len(timestamps)}")
-    print(f"Cantidad total de objframe_idx_2_repr_idx generados: {len(objframe_idx_2_repr_idx)}")
-    # Contar cuántos índices están fuera del rango válido
+    # Verify indices before saving
+    print(f"Total number of histograms generated: {len(timestamps)}")
+    print(f"Total number of objframe_idx_2_repr_idx generated: {len(objframe_idx_2_repr_idx)}")
+    # Count how many indices are out of the valid range
     out_of_range_count = sum(idx >= len(timestamps) for idx in objframe_idx_2_repr_idx)
-    print(f"Índices fuera de rango: {out_of_range_count}")
+    print(f"Indices out of range: {out_of_range_count}")
 
-    # Mostrar los primeros 10 índices fuera de rango
+    # Show the first 10 out-of-range indices
     out_of_range_examples = [idx for idx in objframe_idx_2_repr_idx if idx >= len(timestamps)]
-    print(f"Ejemplo de índices fuera de rango: {out_of_range_examples[:10]}")
+    print(f"Example of out-of-range indices: {out_of_range_examples[:10]}")
 
-    # Forzar los valores dentro del rango válido antes de guardar
+    # Force values within the valid range before saving
     objframe_idx_2_repr_idx = np.clip(objframe_idx_2_repr_idx, 0, len(timestamps) - 1)
 
     ####################################################################
 
-
-
-    # Guardar el archivo corregido
+    # Save the corrected file
     np.save(objframe_idx_file_path, objframe_idx_2_repr_idx)
-    print(f"Índices de frames guardados basado en timestamps externos (total: {len(objframe_idx_2_repr_idx)}).")
+    print(f"Frame indices saved based on external timestamps (total: {len(objframe_idx_2_repr_idx)}).")
 
 
-    # Mostrar advertencias si hubo timestamps sin bin asignado
+    # Show warnings if there were external timestamps without an assigned bin
     if unmatched_timestamps:
-        print(f"Advertencia: {len(unmatched_timestamps)} timestamps externos no coincidieron con ningún bin de histograma.")
+        print(f"Warning: {len(unmatched_timestamps)} external timestamps did not match any histogram bin.")
     else:
-        print("Todos los timestamps externos coincidieron con bins de histograma.")
+        print("All external timestamps matched histogram bins.")
 
-    print("Creación del dataset completada.")
+    print("Dataset creation completed.")
     print("------------------------------------------------------------\n")
 
 
 if __name__ == "__main__":
     # =========================================================================
-    # Directorio raíz que contiene múltiples subcarpetas, cada una con un .bag
+    # Root directory containing multiple subfolders, each with a .bag file
     # =========================================================================
-    main_directory = "/root/TUD_Thesis/flw_dataset/zivid"  # <--- AJUSTA ESTA RUTA A TU NECESIDAD
+    main_directory = "/root/TUD_Thesis/flw_dataset/zivid"  # <--- ADJUST THIS PATH AS NEEDED
 
-    # Iteramos sobre cada elemento del directorio principal
+    # Iterate over each item in the main directory
     for folder_name in os.listdir(main_directory):
-        # Construimos la ruta completa de la subcarpeta
+        # Build the full path of the subfolder
         subdir_path = os.path.join(main_directory, folder_name)
 
-        # Solo nos interesa si es un directorio
+        # We are only interested if it is a directory
         if os.path.isdir(subdir_path):
-            # Llamamos a la función para procesar esa carpeta en particular
-            process_bag_directory(subdir_path)
+            # Call the function to process that particular folder
+            processBagDirectory(subdir_path)
 
-    print("Procesamiento completado para todas las subcarpetas.")
+    print("Processing completed for all subfolders.")
