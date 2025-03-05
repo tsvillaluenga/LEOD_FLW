@@ -64,7 +64,7 @@ Note that there is a file `utils/event_images/mapping.txt` where the names of th
 
 - **man_create_event_representations_v5.py**: This file is used to create the event representations, their linking with the labels and their compression. From here you can adjust the configuration of the histograms to be created.
 
-***MODIFICATIONS:*** No adjustments are necessary.
+***MODIFICATIONS:*** Only adjust `main_directory` to _“preprocess_dir”_ inside the main of the file.
 
 - **order_dataset.py**: This file is used to send all the scenes with the relevant data (representation of events and labels only) to train a model to the location where the finished dataset is saved. Basically it copies each scene with its representation of events and labels and pastes them into the indicated destination folder.
 
