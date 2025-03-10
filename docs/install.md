@@ -71,7 +71,7 @@ Therefore, we only release the split files, config files, and pre-trained weight
 We provide checkpoints for all the models used to produce the final performance in the paper.
 In addition, we provide models pre-trained on the limited annotated data (the `Supervised Baseline` method in the paper) to ease your experiments.
 
-Please download the pre-trained weights from [Google Drive](https://drive.google.com/file/d/1xBzFovvNbrtBt0YwYcvvrjbV8ozAdCUK/view?usp=sharing) and unzip them to `./pretrained/`.
+Please download the pre-trained weights from [HERE](https://www.mediafire.com/file/kbs3glgrm1swnqi/pretrained.zip/file) and unzip them to `./pretrained/`.
 
 The weights are grouped by the Section they are presented in the paper.
 They naming follows the pattern `rvt-{$MODEL_SIZE}-{$DATASET}x{$RATIO_OF_DATA}_{$SETTING}.ckpt`.
