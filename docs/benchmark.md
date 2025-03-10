@@ -9,7 +9,7 @@ To evaluate a pre-trained model, set the `dataset`, `dataset.path`, and `checkpo
 
 ```Bash
 python val.py model=rnndet dataset=flw_dataset dataset.path=./datasets/flw_dataset/ \
-  checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss-final.ckpt" \
+  checkpoint="pretrained/WSOD/rvt-s-flwx0.01_ss-final.ckpt" \
   use_test_set=1 hardware.gpus=0 hardware.num_workers.eval=2 +experiment/flw_dataset="small.yaml" \
   batch_size.eval=4 model.postprocess.confidence_threshold=0.001 reverse=False tta.enable=False
 ```
@@ -67,7 +67,7 @@ The entire eval/test sets are also soft-linked.
 
 ```Bash
 python predict.py model=pseudo_labeler dataset=flwx0.01_ss dataset.path=./datasets/flw_dataset/ \
-  checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss.ckpt" \
+  checkpoint="ned/WSOD/rvt-s-flwx0.01_ss-final.ckptt" \
   hardware.gpus=0 +experiment/flw_dataset="small.yaml" model.postprocess.confidence_threshold=0.01 \
   tta.enable=True save_dir=./datasets/pseudo_flw/flwx0.01_ss-1round/train
 ```
