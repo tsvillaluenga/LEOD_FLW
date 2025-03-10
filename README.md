@@ -35,7 +35,7 @@ You may also pre-process the dataset yourself by following the [instructions](do
 <th valign="bottom"></th>
 <th valign="bottom">FLW Dataset</th>
 <tr><td align="left">pre-trained checkpoint</td>
-<td align="center"><a href="https://download.ifi.uzh.ch/rpg/RVT/checkpoints/1mpx/rvt-b.ckpt">download</a></td>
+<td align="center"><a href="https://www.mediafire.com/file/kbs3glgrm1swnqi/pretrained.zip/file">download</a></td>
 </tr>
 </tbody></table>
 
