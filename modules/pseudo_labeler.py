@@ -344,7 +344,7 @@ class EventSeqData:
         """
         # save_dir: path/to/dataset/train/
         # self.path: path/to/dataset/train/18-03-29_13-15-02_500000_60500000
-        assert dst_name in ['gen1', 'gen4']
+        assert dst_name in ['gen1', 'gen4', 'flw_dataset']
         assert 'train' in save_dir and dst_name in save_dir
         assert 'train' in self.path and dst_name in self.path
 
@@ -420,7 +420,7 @@ class PseudoLabeler(Module):
 
         self.dst_name = dst_name = self.dst_config.name
         self.ds_by2 = self.dst_config.downsample_by_factor_2
-        assert dst_name in ['gen1', 'gen4'], f'Unknown dataset {dst_name}'
+        assert dst_name in ['gen1', 'gen4', 'flw_dataset'], f'Unknown dataset {dst_name}'
         self.save_dir = self.full_config.save_dir
         assert dst_name in self.save_dir, \
             'save_dir must contain the name of the dataset'

@@ -16,7 +16,10 @@ def dynamically_modify_train_config(config: DictConfig):
         dst_cfg = config.dataset
         dst_name = dst_cfg.name
         assert dst_name in {'gen1', 'gen4', 'flw_dataset'}, f'{dst_name=} not supported'
-        num_classes = 3 if dst_name == 'gen4' else 2
+        if dst_name == 'gen1': num_classes = 2
+        if dst_name == 'gen4': num_classes = 3
+        if dst_name == 'flw_dataset': num_classes = 4      
+        
         print(f"Dataset Name: {dst_name}, Number of Classes: {num_classes}") ####DEBUGGG
         dst_cfg.num_classes = num_classes
         dataset_hw = get_dataloading_hw(dataset_config=dst_cfg)
@@ -78,7 +81,7 @@ def dynamically_modify_train_config(config: DictConfig):
             raise NotImplementedError
 
         # conversion between Gen1 and Gen4
-        # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car'); flw: ('cra', 'hum')
+        # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car'); flw: ('ziv', 'hum', 'pal', 'wag')
         # we make gen4's cyc setting the same as ped if missed
         if hasattr(mdl_cfg, 'pseudo_label'):
             obj_thresh = mdl_cfg.pseudo_label.obj_thresh

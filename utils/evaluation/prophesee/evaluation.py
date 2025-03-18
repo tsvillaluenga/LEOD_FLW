@@ -18,7 +18,7 @@ def evaluate_list(result_boxes_list,
     elif camera == 'gen4':
         classes = ("pedestrian", "two-wheeler", "car")
     elif camera == 'flw_dataset':
-        classes = ("zivid", "human")
+        classes = ("zivid", "human", "pallet", "wagen"), 
     else:
         raise NotImplementedError
 

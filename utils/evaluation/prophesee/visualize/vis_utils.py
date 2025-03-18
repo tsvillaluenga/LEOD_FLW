@@ -17,7 +17,7 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 LABELMAP_GEN1 = ("car", "pedestrian")
 LABELMAP_GEN4 = ('pedestrian', 'two wheeler', 'car', 'truck', 'bus', 'traffic sign', 'traffic light')
 LABELMAP_GEN4_SHORT = ('pedestrian', 'two wheeler', 'car')
-LABELMAP_FLW = ("zivid", "human")
+LABELMAP_FLW = ("zivid", "human", "pallet", "wagen")
 
 
 def get_labelmap(dst_name):
@@ -73,6 +73,8 @@ def draw_bboxes_bbv(img, boxes, labelmap=LABELMAP_GEN1) -> np.ndarray:
         classid2colors = {
             0: (0, 0, 255),  # cra -> blue (rgb)
             1: (255, 255, 0),  # hum -> yellow (rgb)
+            2: (0, 255, 0),  # pal -> green (rgb)
+            3: (255, 0, 0),  # wag -> red (rgb)
         }
         scale_multiplier = 2
     else:

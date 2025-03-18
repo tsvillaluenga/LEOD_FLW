@@ -10,17 +10,3 @@ ev_repr_hw: [240, 304]  ###[360, 640]
 downsample_by_factor_2: False
 only_load_end_labels: False
 
-
-train_ratio: 1.0
-test_ratio: 0.8
-val_ratio: 0.8
-
-# time-flip data augmentation
-data_augmentation:
-  random:
-     prob_hflip: 0.5
-     prob_tflip: 0.5
-  stream:
-    prob_hflip: 0.5
-    prob_tflip: 0.5
-
