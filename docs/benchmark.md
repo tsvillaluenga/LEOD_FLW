@@ -46,7 +46,7 @@ We follow RVT for most of the settings, e.g., batch size, learning rate.
 The biggest change we made is early stopping to prevent overfitting.
 
 ```Bash
-python train.py model=rnndet hardware.gpus=0 dataset=flwx0.01_ss \
+python train.py model=rnndet hardware.gpus=0 dataset=flw_datasetx0.01_ss \
   +experiment/flw_dataset="small.yaml" training.max_steps=200000
 ```
 
@@ -66,10 +66,10 @@ Note that labels are saved as `.npy` files, while the events are soft-linked ins
 The entire eval/test sets are also soft-linked.
 
 ```Bash
-python predict.py model=pseudo_labeler dataset=flwx0.01_ss dataset.path=./datasets/flw_dataset/ \
-  checkpoint="ned/WSOD/rvt-s-flwx0.01_ss-final.ckptt" \
+python predict.py model=pseudo_labeler dataset=flw_datasetx0.01_ss dataset.path=./datasets/flw_dataset/ \
+  checkpoint="ned/WSOD/rvt-s-flw_datasetx0.01_ss-final.ckpt" \
   hardware.gpus=0 +experiment/flw_dataset="small.yaml" model.postprocess.confidence_threshold=0.01 \
-  tta.enable=True save_dir=./datasets/pseudo_flw/flwx0.01_ss-1round/train
+  tta.enable=True save_dir=./datasets/pseudo_flw_dataset/flw_datasetx0.01_ss-1round/train
 ```
 
 This script also run tests to ensure that the saved labels are in the correct format.
@@ -81,8 +81,8 @@ You may want to inspect the quality of the generated pseudo labels, e.g., their 
 We provide scripts for doing this:
 
 ```Bash
-python val_dst.py model=pseudo_labeler dataset=flwx0.01_ss \
-  dataset.path=./datasets/pseudo_flw/flwx0.01_ss-1round checkpoint=1 \
+python val_dst.py model=pseudo_labeler dataset=flw_datasetx0.01_ss \
+  dataset.path=./datasets/pseudo_flw/flw_datasetx0.01_ss-1round checkpoint=1 \
   +experiment/flw_dataset="small.yaml" model.pseudo_label.obj_thresh=0.01 model.pseudo_label.cls_thresh=0.01
 ```
 
@@ -94,7 +94,7 @@ You can simply copy an existing dataset config and change the path to the path o
 We provide one such example at [flwx0.01_ss-1round.yaml](../config/dataset/flwx0.01_ss-1round.yaml).
 
 ```Bash
-python train.py model=rnndet-soft hardware.gpus=0 dataset=flwx0.01_ss-1round \
+python train.py model=rnndet-soft hardware.gpus=0 dataset=flw_datasetx0.01_ss-1round \
   +experiment/flw_dataset="small.yaml" training.max_steps=150000 training.learning_rate=0.0005
 ```
 
